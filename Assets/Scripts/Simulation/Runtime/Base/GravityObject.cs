@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class GravityObject : MonoBehaviour
 {
-    
-    
+    [SerializeField] protected float timeStepMultipier = 1;
 }

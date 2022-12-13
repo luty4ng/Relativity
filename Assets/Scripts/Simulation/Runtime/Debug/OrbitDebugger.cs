@@ -1,9 +1,8 @@
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class OrbitDebugger : MonoBehaviour
+public class OrbitDebugger : GravityObject
 {
-
     public int numSteps = 1000;
     public float timeStep = 0.1f;
     public bool usePhysicsTimeStep;
@@ -23,7 +22,7 @@ public class OrbitDebugger : MonoBehaviour
 
     void Update()
     {
-
+        
         if (!Application.isPlaying)
         {
             DrawOrbits();
@@ -130,7 +129,6 @@ public class OrbitDebugger : MonoBehaviour
     void HideOrbits()
     {
         SimulatedBody[] bodies = FindObjectsOfType<SimulatedBody>();
-
         // Draw paths
         for (int bodyIndex = 0; bodyIndex < bodies.Length; bodyIndex++)
         {

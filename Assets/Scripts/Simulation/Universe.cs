@@ -8,4 +8,5 @@ public class Universe : MonoSingletonBase<Universe> {
     public const float DefaultPhysicsTimeStep = 0.01f;
     public float GravitationalConstant = DefaultGravitationalConstant;
     public float PhysicsTimeStep = DefaultPhysicsTimeStep;
+    
 }

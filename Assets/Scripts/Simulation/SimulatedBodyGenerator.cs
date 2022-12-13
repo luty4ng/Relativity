@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class CelestialBodyGenerator : MonoBehaviour {
-
+public class CelestialBodyGenerator : MonoBehaviour 
+{
 	// public enum PreviewMode { LOD0, LOD1, LOD2, CollisionRes }
 	// public ResolutionSettings resolutionSettings;
 	// public PreviewMode previewMode;

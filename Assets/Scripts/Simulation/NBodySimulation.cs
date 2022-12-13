@@ -6,26 +6,28 @@ public class NBodySimulation : MonoBehaviour
 {
     SimulatedBody[] bodies;
     static NBodySimulation instance;
-
+    static float DefaultTimeStep;
     void Awake()
     {
         bodies = FindObjectsOfType<SimulatedBody>();
         Time.fixedDeltaTime = Universe.current.PhysicsTimeStep;
-        Debug.Log("Setting fixedDeltaTime to: " + Universe.current.PhysicsTimeStep);
+        Debug.Log("Setting Fixed DeltaTime To: " + Universe.current.PhysicsTimeStep);
+        DefaultTimeStep = Universe.current.PhysicsTimeStep;
     }
 
     void FixedUpdate()
     {
         for (int i = 0; i < bodies.Length; i++)
         {
+            bodies[i].OnUpdateTimeStepMultipiler();
             Vector3 acceleration = CalculateAcceleration(bodies[i].Position, bodies[i]);
-            bodies[i].UpdateVelocity(acceleration, Universe.current.PhysicsTimeStep);
-            //bodies[i].UpdateVelocity (bodies, Universe.current.PhysicsTimeStep);
+            bodies[i].UpdateVelocity(acceleration, DefaultTimeStep);
+            // bodies[i].UpdateVelocity (bodies, Universe.current.PhysicsTimeStep);
         }
 
         for (int i = 0; i < bodies.Length; i++)
         {
-            bodies[i].UpdatePosition(Universe.current.PhysicsTimeStep);
+            bodies[i].UpdatePosition(DefaultTimeStep);
         }
     }
 
@@ -41,7 +43,6 @@ public class NBodySimulation : MonoBehaviour
                 acceleration += forceDir * Universe.current.GravitationalConstant * body.mass / sqrDst;
             }
         }
-
         return acceleration;
     }
 

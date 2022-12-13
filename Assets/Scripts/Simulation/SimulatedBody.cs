@@ -3,24 +3,43 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(Rigidbody))]
-public class SimulatedBody : MonoBehaviour
+public class SimulatedBody : GravityObject
 {
-
     public float radius;
     public float surfaceGravity;
     public Vector3 initialVelocity;
     public string bodyName = "Unnamed";
+    public bool enableRelativity = false;
     Transform meshHolder;
 
     public Vector3 velocity { get; private set; }
     public float mass { get; private set; }
     Rigidbody rb;
+    Observer theOnlyObserver;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.mass = mass;
         velocity = initialVelocity;
+        if (enableRelativity)
+            theOnlyObserver = FindObjectOfType<Observer>();
+    }
+
+    public virtual void OnUpdateTimeStepMultipiler()
+    {
+        if (enableRelativity)
+        {
+            if (theOnlyObserver == null)
+            {
+                Debug.LogError("The only observer is not exist.");
+                return;
+            }
+            
+            float sqrDst = (theOnlyObserver.rb.position - this.rb.position).sqrMagnitude;
+            float schwarzschildRadius = 2 * mass * Universe.current.GravitationalConstant;
+            timeStepMultipier = Mathf.Sqrt(1 - (schwarzschildRadius / sqrDst));
+        }
     }
 
     public void UpdateVelocity(SimulatedBody[] allBodies, float timeStep)
@@ -39,12 +58,14 @@ public class SimulatedBody : MonoBehaviour
 
     public void UpdateVelocity(Vector3 acceleration, float timeStep)
     {
-        velocity += acceleration * timeStep;
+        velocity += acceleration * timeStep * timeStepMultipier;
     }
+
     public void UpdatePosition(float timeStep)
     {
-        rb.MovePosition(rb.position + velocity * timeStep);
+        rb.MovePosition(rb.position + velocity * timeStep * timeStepMultipier);
     }
+
     void OnValidate()
     {
         mass = surfaceGravity * radius * radius / Universe.DefaultGravitationalConstant;
@@ -52,6 +73,7 @@ public class SimulatedBody : MonoBehaviour
         meshHolder.localScale = Vector3.one * radius;
         gameObject.name = bodyName;
     }
+
     public Rigidbody Rigidbody
     {
         get
@@ -59,6 +81,7 @@ public class SimulatedBody : MonoBehaviour
             return rb;
         }
     }
+
     public Vector3 Position
     {
         get
